@@ -151,20 +151,6 @@ const LoginPage: React.FC = () => {
                   </span>
                   Sign in with Google
                 </button>
-                <button className="flex items-center justify-center gap-3 w-full py-2 rounded-xl bg-[#0077b5]/90 hover:bg-[#0077b5] text-white font-semibold shadow border border-white/30 transition-colors">
-                  <span className="inline-block w-6 h-6">
-                    {/* LinkedIn SVG */}
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path fill="#fff" d="M29 0H3C1.3 0 0 1.3 0 3v26c0 1.7 1.3 3 3 3h26c1.7 0 3-1.3 3-3V3c0-1.7-1.3-3-3-3zM9.4 27.1H5.2V12.1h4.2v15zm-2.1-17c-1.3 0-2.1-.9-2.1-2.1 0-1.2.8-2.1 2.1-2.1s2.1.9 2.1 2.1c0 1.2-.8 2.1-2.1 2.1zm19.1 17h-4.2v-7.5c0-1.8-.6-3-2.2-3-1.2 0-1.9.8-2.2 1.6-.1.3-.1.7-.1 1.1v7.8h-4.2s.1-12.7 0-14h4.2v2c.6-.9 1.7-2.2 4.1-2.2 3 0 5.2 2 5.2 6.3v7.9z"/></svg>
-                  </span>
-                  Sign in with LinkedIn
-                </button>
-                <button className="flex items-center justify-center gap-3 w-full py-2 rounded-xl bg-[#24292f]/90 hover:bg-[#24292f] text-white font-semibold shadow border border-white/30 transition-colors">
-                  <span className="inline-block w-6 h-6">
-                    {/* GitHub SVG */}
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="#fff" d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.438 9.8 8.205 11.387.6.113.82-.262.82-.582 0-.288-.012-1.243-.018-2.25-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.756-1.333-1.756-1.09-.745.083-.729.083-.729 1.205.085 1.84 1.237 1.84 1.237 1.07 1.834 2.807 1.304 3.492.997.108-.775.418-1.305.762-1.606-2.665-.304-5.466-1.334-5.466-5.933 0-1.31.468-2.382 1.236-3.222-.124-.303-.535-1.523.117-3.176 0 0 1.008-.322 3.3 1.23.96-.267 1.98-.399 3-.404 1.02.005 2.04.137 3 .404 2.29-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.873.12 3.176.77.84 1.235 1.912 1.235 3.222 0 4.61-2.803 5.625-5.475 5.922.43.37.823 1.102.823 2.222 0 1.606-.015 2.898-.015 3.293 0 .322.216.698.825.58C20.565 21.796 24 17.297 24 12c0-6.63-5.373-12-12-12z"/></svg>
-                  </span>
-                  Sign in with GitHub
-                </button>
               </div>
             )}
             <div className="mt-8 text-center w-full">
