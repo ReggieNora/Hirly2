@@ -139,7 +139,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess }) => {
           <p className="text-white/80 mb-6 text-center max-w-md">Sign up or log in to start matching with top jobs and talent, powered by AI and a modern experience.</p>
           <button
             className="px-8 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold shadow-lg flex items-center gap-2 hover:from-pink-600 hover:to-purple-600 transition-colors mx-auto"
-            onClick={() => setShowSignUp(true)}
+            onClick={() => onAuthSuccess('candidate')}
           >
             <UserPlus className="w-5 h-5" /> Sign Up or Log In <ArrowRight className="w-5 h-5" />
           </button>

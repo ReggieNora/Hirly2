@@ -134,12 +134,12 @@ const LoginPage: React.FC = () => {
                   required
                 />
               )}
-              <button
-                type="submit"
+              <Link
+                to="/"
                 className="mt-2 px-8 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold shadow-lg flex items-center justify-center gap-2 hover:from-pink-600 hover:to-purple-600 transition-colors text-lg"
               >
                 {authAction === 'signin' ? <LogIn className="w-5 h-5" /> : <UserPlus className="w-5 h-5" />} {authAction === 'signin' ? 'Sign In' : 'Sign Up'}
-              </button>
+              </Link>
             </form>
             {/* Social Sign-In Buttons */}
             {authAction === 'signin' && (

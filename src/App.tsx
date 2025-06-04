@@ -11,6 +11,7 @@ import CompanyProfileCard from './components/CompanyProfileCard';
 import LandingPage from './components/LandingPage';
 import JobCard from './components/JobCard';
 import AboutPage from './components/AboutPage';
+import BentoMainMenu from './components/BentoMainMenu';
 
 function App() {
   const [selectedRole, setSelectedRole] = useState<'candidate' | 'employer' | null>(null);
@@ -356,6 +357,7 @@ function App() {
     }} />;
   }
 
+  // Render the new bento grid main menu after authentication
   return (
     <div className="min-h-screen w-full flex items-center justify-center p-4">
       <Iridescence 
@@ -363,113 +365,7 @@ function App() {
         speed={0.2}
         amplitude={0.05}
       />
-      
-      {/* Logo with Dropdown */}
-      <div className="fixed top-8 left-8 z-20" ref={menuRef}>
-        <div className="relative">
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="flex items-center space-x-2 group"
-          >
-            <h1 className={`app-logo ${isMenuOpen ? 'active' : ''}`}>Hirly</h1>
-            <ChevronDown 
-              className={`w-5 h-5 text-white/60 transition-transform duration-200
-                         ${isMenuOpen ? 'rotate-180' : ''}
-                         group-hover:text-white`} 
-            />
-          </button>
-
-          {/* Dropdown Menu */}
-          <div 
-            className={`absolute top-full left-0 mt-2 w-48 rounded-xl
-                      bg-white/10 backdrop-blur-md border border-white/20
-                      shadow-xl shadow-black/20 overflow-hidden
-                      transition-all duration-200 origin-top
-                      ${isMenuOpen ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}
-          >
-            {/* Section Header */}
-            <div className="px-4 py-2 border-b border-white/10">
-              <div className="flex items-center space-x-2">
-                <Briefcase className="w-4 h-4 text-white/60" />
-                <span className="text-sm font-medium text-white/60">
-                  {selectedRole === 'employer' ? 'Employer' : 'Candidate'}
-                </span>
-              </div>
-            </div>
-
-            {menuItems.map((item) => (
-              <button
-                key={item.label}
-                onClick={() => handleMenuSelect(item.index)}
-                className={`w-full px-4 py-3 flex items-center space-x-3
-                          text-white/80 hover:text-white hover:bg-white/10
-                          transition-colors duration-200
-                          ${currentCardIndex === item.index ? 'bg-white/10 text-white' : ''}`}
-              >
-                {item.icon}
-                <span>{item.label}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Navigation Arrows */}
-      <button
-        onClick={handlePrevious}
-        className="fixed left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full 
-                 bg-white/10 backdrop-blur-md border border-white/10
-                 flex items-center justify-center
-                 transition-all duration-300
-                 hover:bg-white/20 hover:scale-105
-                 active:scale-95 focus:outline-none
-                 z-10"
-      >
-        <ChevronLeft className="w-6 h-6 text-white" />
-      </button>
-
-      <button
-        onClick={handleNext}
-        className="fixed right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full 
-                 bg-white/10 backdrop-blur-md border border-white/10
-                 flex items-center justify-center
-                 transition-all duration-300
-                 hover:bg-white/20 hover:scale-105
-                 active:scale-95 focus:outline-none
-                 z-10"
-      >
-        <ChevronRight className="w-6 h-6 text-white" />
-      </button>
-
-      <div className="flex flex-col items-center">
-        <div 
-          ref={cardRef}
-          onTouchStart={handleSwipeStart}
-          onTouchMove={handleSwipeMove}
-          onTouchEnd={handleSwipeEnd}
-          className={`
-            transition-all duration-300 transform
-            ${isAnimating ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}
-            ${swipeDirection === 'left' ? 'translate-x-[-100vw]' : ''}
-            ${swipeDirection === 'right' ? 'translate-x-[100vw]' : ''}
-            hover:scale-[1.02] transition-transform
-          `}
-        >
-          {cards[currentCardIndex].component}
-        </div>
-        {currentCardIndex === 0 && (
-          <div className={`
-            transition-all duration-300
-            ${isAnimating ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}
-          `}>
-            <ActionButtons 
-              onDismiss={() => selectedRole === 'employer' ? handleCandidateAction('pass') : handleJobAction('pass')}
-              onFavorite={() => selectedRole === 'employer' ? handleCandidateAction('save') : handleJobAction('save')}
-              onLike={() => selectedRole === 'employer' ? handleCandidateAction('like') : handleJobAction('like')}
-            />
-          </div>
-        )}
-      </div>
+      <BentoMainMenu />
     </div>
   );
 }

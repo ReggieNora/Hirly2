@@ -10,8 +10,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@tabler/icons-react": "^2.47.0",
     "chart.js": "^4.4.9",
-    "framer-motion": "^12.16.0",
+    "framer-motion": "^10.18.0",
     "gsap": "^3.13.0",
     "lucide-react": "^0.344.0",
     "ogl": "^1.0.11",
