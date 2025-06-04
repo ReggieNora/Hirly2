@@ -11,6 +11,15 @@
 
   body {
     @apply antialiased;
+    background: linear-gradient(to top left, #7c3aed, #000 60%, #000);
+    min-height: 100vh;
+    min-width: 100vw;
+  }
+
+  html {
+    background: linear-gradient(to top left, #7c3aed, #000 60%, #000);
+    min-height: 100vh;
+    min-width: 100vw;
   }
 }
 

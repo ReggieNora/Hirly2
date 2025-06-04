@@ -100,7 +100,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess }) => {
         >
           <RotateCcw className="w-5 h-5 text-white" />
         </button>
-        <DraggableCardContainer key={resetKey} className="relative flex items-center justify-center w-full h-full" >
+        <DraggableCardContainer key={resetKey} className="fixed inset-0 z-10 flex items-center justify-center" >
           {[...CARD_STACK].reverse().map((item, index) => {
             // The top card (Hirly, target icon) is the last in the reversed array
             const isHero = (CARD_STACK.length - 1 - index) === 0;
