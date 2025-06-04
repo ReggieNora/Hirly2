@@ -1,10 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, UserPlus, LogIn, Star, Quote, Briefcase, Users, Shield, Sparkles, MessageCircle, Globe, CheckCircle, RotateCcw } from 'lucide-react';
-import CardSwap, { Card } from './CardSwap';
-import GradientText from './GradientText';
-import { motion } from 'framer-motion';
-import Waves from './Waves';
-import AboutPage from './AboutPage';
+import { ArrowRight, UserPlus, LogIn, RotateCcw } from 'lucide-react';
 import { DraggableCardBody, DraggableCardContainer } from './ui/draggable-card';
 
 interface LandingPageProps {
@@ -13,36 +8,43 @@ interface LandingPageProps {
 
 const CARD_STACK = [
   {
-    title: "Welcome to Hirly",
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=3540&auto=format&fit=crop",
+    icon: '🎯',
+    title: 'Hirly',
+    text: 'Work that finds you.\n\nSmart matches. Human-first hiring.',
   },
   {
-    title: "Find Your Dream Job",
-    image: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?q=80&w=3540&auto=format&fit=crop",
+    icon: '📸',
+    title: 'Not a Resume. A Real Story.',
+    text: "You're more than a bullet list.\nHirly captures your whole vibe -- not just your job titles.",
   },
   {
-    title: "Hire Top Talent",
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=3540&auto=format&fit=crop",
+    icon: '🔁',
+    title: 'Matching, Not Searching',
+    text: 'Stop scrolling. Start matching.\nWe pair you with people and places where you belong.',
   },
   {
-    title: "AI-Powered Matching",
-    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?q=80&w=3540&auto=format&fit=crop",
+    icon: '📱',
+    title: 'Sleek. Simple. Swipe.',
+    text: 'Our modern UI makes hiring feel like a convo, not a chore.\nClean cards. Clear paths. No clutter.',
   },
   {
-    title: "Real-Time Chat",
-    image: "https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=3540&auto=format&fit=crop",
+    icon: '💬',
+    title: 'Personality Over Paper',
+    text: 'Culture fit > checkbox fit.\nWe focus on chemistry, not just credentials.',
   },
   {
-    title: "Privacy First",
-    image: "https://images.unsplash.com/photo-1633265486064-086b219458ec?q=80&w=3540&auto=format&fit=crop",
+    icon: '🛠️',
+    title: 'Built by Creatives, Not Corporates',
+    text: 'Hirly is made by makers --\nFor people who hire with heart, not templates.',
   },
   {
-    title: "Global Reach",
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=3540&auto=format&fit=crop",
+    icon: '🚀',
+    title: 'Ready to stop applying and start aligning?',
+    text: '',
+    cta: true,
   },
 ];
 
-// Polaroid-style offsets and rotations for the stack
 const CARD_LAYOUT = [
   { rotate: -10, x: -80, y: 30 },
   { rotate: -5, x: -40, y: 10 },
@@ -53,56 +55,8 @@ const CARD_LAYOUT = [
   { rotate: -15, x: -120, y: 50 },
 ];
 
-const CARD_WIDTH = 320;
-const CARD_HEIGHT = 380;
-
-// Animated Stat Circle component
-const AnimatedStat = ({ icon: Icon, value, label, color }: { icon: any, value: number, label: string, color: string }) => {
-  const [inView, setInView] = React.useState(false);
-  const ref = React.useRef<HTMLDivElement>(null);
-  React.useEffect(() => {
-    const observer = new window.IntersectionObserver(
-      ([entry]) => setInView(entry.isIntersecting),
-      { threshold: 0.5 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => { if (ref.current) observer.unobserve(ref.current); };
-  }, []);
-  return (
-    <div ref={ref} className="flex flex-col items-center">
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={inView ? { scale: 1, opacity: 1 } : {}}
-        transition={{ duration: 0.6, type: 'spring' }}
-        className="relative mb-4"
-      >
-        <svg width="110" height="110" viewBox="0 0 110 110">
-          <circle cx="55" cy="55" r="48" stroke="#22223b" strokeWidth="10" fill="none" />
-          <motion.circle
-            cx="55" cy="55" r="48" stroke={color} strokeWidth="10" fill="none"
-            strokeDasharray={2 * Math.PI * 48}
-            strokeDashoffset={inView ? 2 * Math.PI * 48 * (1 - value / 100) : 2 * Math.PI * 48}
-            strokeLinecap="round"
-            initial={false}
-            animate={{ strokeDashoffset: inView ? 2 * Math.PI * 48 * (1 - value / 100) : 2 * Math.PI * 48 }}
-            transition={{ duration: 1.2, delay: 0.2 }}
-          />
-        </svg>
-        <Icon className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 ${color}`} />
-      </motion.div>
-      <motion.span
-        className="text-4xl font-bold text-white mb-2"
-        initial={{ opacity: 0, y: 20 }}
-        animate={inView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.7, delay: 0.3 }}
-      >
-        {inView ? value : 0}
-        {label === 'countries with active users' ? '+' : label === 'faster hiring with AI matching' ? 'x' : '%'}
-      </motion.span>
-      <span className="text-white/70 text-lg text-center max-w-[160px]">{label}</span>
-    </div>
-  );
-};
+const CARD_WIDTH = 340;
+const CARD_HEIGHT = 400;
 
 const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess }) => {
   const [showSignUp, setShowSignUp] = useState(false);
@@ -132,7 +86,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess }) => {
           <RotateCcw className="w-5 h-5 text-white" />
         </button>
         <DraggableCardContainer key={resetKey} className="relative flex items-center justify-center w-full h-full" >
-          {CARD_STACK.map((item, index) => {
+          {[...CARD_STACK].reverse().map((item, index) => {
             const layout = CARD_LAYOUT[index] || { rotate: 0, x: 0, y: 0 };
             return (
               <DraggableCardBody
@@ -147,16 +101,20 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess }) => {
                   }}
                   className="bg-neutral-900 border-8 border-black rounded-lg shadow-2xl flex flex-col items-center justify-between overflow-hidden"
                 >
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-full h-[80%] object-cover bg-black"
-                    style={{ objectFit: 'cover' }}
-                  />
-                  <div className="w-full h-[20%] flex flex-col items-center justify-center">
-                    <span className="text-white text-lg font-bold mt-2 mb-2 text-center">
-                      {item.title}
-                    </span>
+                  <div className="flex flex-col items-center justify-center w-full h-full p-6">
+                    <span className="text-5xl mb-4 select-none" aria-hidden>{item.icon}</span>
+                    <h2 className="text-2xl font-bold text-white mb-3 text-center">{item.title}</h2>
+                    {item.text && (
+                      <p className="text-white/90 text-center whitespace-pre-line text-lg">{item.text}</p>
+                    )}
+                    {item.cta && (
+                      <button
+                        className="mt-8 px-8 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold shadow-lg flex items-center justify-center gap-2 hover:from-pink-600 hover:to-purple-600 transition-colors"
+                        onClick={() => setShowSignUp(true)}
+                      >
+                        <UserPlus className="w-5 h-5" /> Get Started <ArrowRight className="w-5 h-5" />
+                      </button>
+                    )}
                   </div>
                 </div>
               </DraggableCardBody>
