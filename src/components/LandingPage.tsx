@@ -45,27 +45,33 @@ const CARD_STACK = [
   },
 ];
 
-const CARD_LAYOUT = [
-  { rotate: -10, x: -80, y: 30 },
-  { rotate: -5, x: -40, y: 10 },
-  { rotate: 0, x: 0, y: 0 },
-  { rotate: 5, x: 40, y: 10 },
-  { rotate: 10, x: 80, y: 30 },
-  { rotate: 15, x: 120, y: 50 },
-  { rotate: -15, x: -120, y: 50 },
-];
-
 const CARD_WIDTH = 340;
 const CARD_HEIGHT = 400;
+
+function getRandomLayout(num: number) {
+  // Spread cards in a fan, but randomize rotation and offset a bit
+  const baseAngles = [-10, -5, 0, 5, 10, 15, -15];
+  const baseXs = [-80, -40, 0, 40, 80, 120, -120];
+  const baseYs = [30, 10, 0, 10, 30, 50, 50];
+  return Array.from({ length: num }).map((_, i) => ({
+    rotate: baseAngles[i % baseAngles.length] + (Math.random() - 0.5) * 8, // ±4 deg
+    x: baseXs[i % baseXs.length] + (Math.random() - 0.5) * 30, // ±15 px
+    y: baseYs[i % baseYs.length] + (Math.random() - 0.5) * 20, // ±10 px
+  }));
+}
 
 const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess }) => {
   const [showSignUp, setShowSignUp] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [userType, setUserType] = useState<'candidate' | 'employer'>('candidate');
   const [resetKey, setResetKey] = useState(0);
+  const [cardLayout, setCardLayout] = useState(() => getRandomLayout(CARD_STACK.length));
 
-  // Reset cards by changing the key on the container
-  const handleReset = () => setResetKey(k => k + 1);
+  // Reset cards by changing the key on the container and randomizing layout
+  const handleReset = () => {
+    setResetKey(k => k + 1);
+    setCardLayout(getRandomLayout(CARD_STACK.length));
+  };
 
   return (
     <div className="min-h-screen w-full bg-black flex flex-col">
@@ -87,7 +93,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess }) => {
         </button>
         <DraggableCardContainer key={resetKey} className="relative flex items-center justify-center w-full h-full" >
           {[...CARD_STACK].reverse().map((item, index) => {
-            const layout = CARD_LAYOUT[index] || { rotate: 0, x: 0, y: 0 };
+            // First card (top) is always upright and centered
+            const layout = index === 0
+              ? { rotate: 0, x: 0, y: 0 }
+              : cardLayout[index] || { rotate: 0, x: 0, y: 0 };
             return (
               <DraggableCardBody
                 key={index}
