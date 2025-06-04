@@ -93,8 +93,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess }) => {
         </button>
         <DraggableCardContainer key={resetKey} className="relative flex items-center justify-center w-full h-full" >
           {[...CARD_STACK].reverse().map((item, index) => {
-            // First card (top) is always upright and centered
-            const layout = index === 0
+            // The top card (Hirly, target icon) is the last in the reversed array
+            const isHero = (CARD_STACK.length - 1 - index) === 0;
+            const layout = isHero
               ? { rotate: 0, x: 0, y: 0 }
               : cardLayout[index] || { rotate: 0, x: 0, y: 0 };
             return (
