@@ -109,7 +109,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess }) => {
                     height: CARD_HEIGHT,
                     transform: `translate(-50%, -50%) translate(${layout.x}px, ${layout.y}px) rotate(${layout.rotate}deg)`
                   }}
-                  className="bg-neutral-900 border-8 border-black rounded-lg shadow-2xl flex flex-col items-center justify-between overflow-hidden"
+                  className="bg-black/60 backdrop-blur-xl border border-white/20 rounded-lg shadow-2xl flex flex-col items-center justify-between overflow-hidden"
                 >
                   <div className="flex flex-col items-center justify-center w-full h-full p-6">
                     <span className="text-5xl mb-4 select-none" aria-hidden>{item.icon}</span>
