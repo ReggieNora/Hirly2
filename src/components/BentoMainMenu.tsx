@@ -9,6 +9,7 @@ import {
   IconRobotFace,
 } from "@tabler/icons-react";
 import { motion } from "framer-motion";
+import SwipeApp from "./SwipeApp";
 
 // Skeletons for visual effect (can be customized per tile)
 const SkeletonSwipe = () => (
@@ -81,6 +82,12 @@ const items = [
 ];
 
 export default function BentoMainMenu() {
+  const [swipeOpen, setSwipeOpen] = React.useState(false);
+
+  if (swipeOpen) {
+    return <SwipeApp onCollapse={() => setSwipeOpen(false)} />;
+  }
+
   return (
     <BentoGrid className="max-w-4xl mx-auto md:auto-rows-[20rem]">
       {items.map((item, i) => (
@@ -91,6 +98,8 @@ export default function BentoMainMenu() {
           header={item.header}
           className={item.className}
           icon={item.icon}
+          // Only Swipe tile is clickable for now
+          {...(item.title === "Swipe" && { onClick: () => setSwipeOpen(true), style: { cursor: "pointer" } })}
         />
       ))}
     </BentoGrid>
