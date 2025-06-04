@@ -38,12 +38,6 @@ const CARD_STACK = [
     title: 'Built by Creatives, Not Corporates',
     text: 'Hirly is made by makers --\nFor people who hire with heart, not templates.',
   },
-  {
-    icon: '🚀',
-    title: 'Ready to stop applying and start aligning?',
-    text: '',
-    cta: true,
-  },
 ];
 
 const CARD_WIDTH = 340;
@@ -75,7 +69,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess }) => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-black flex flex-col">
+    <div className="min-h-screen w-full bg-gradient-to-tl from-purple-700 via-black to-black flex flex-col">
       {/* Navigation */}
       <nav className="flex justify-between items-center px-12 py-6 text-white/90 text-lg gap-10 relative">
         {/* Logo in upper left */}
@@ -131,14 +125,6 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess }) => {
                     <h2 className="text-2xl font-bold text-white mb-3 text-center">{item.title}</h2>
                     {item.text && (
                       <p className="text-white/90 text-center whitespace-pre-line text-lg">{item.text}</p>
-                    )}
-                    {item.cta && (
-                      <button
-                        className="mt-8 px-8 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold shadow-lg flex items-center justify-center gap-2 hover:from-pink-600 hover:to-purple-600 transition-colors"
-                        onClick={() => setShowSignUp(true)}
-                      >
-                        <UserPlus className="w-5 h-5" /> Get Started <ArrowRight className="w-5 h-5" />
-                      </button>
                     )}
                   </div>
                 </div>
