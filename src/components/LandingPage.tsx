@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ArrowRight, UserPlus, LogIn, RotateCcw, Twitter, Linkedin, Github } from 'lucide-react';
 import { DraggableCardBody, DraggableCardContainer } from './ui/draggable-card';
 import hirlyLogo from '../assets/hirly-logo.png';
+import { Link } from 'react-router-dom';
 
 interface LandingPageProps {
   onAuthSuccess: (userType: 'candidate' | 'employer') => void;
@@ -73,12 +74,12 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess }) => {
       {/* Navigation */}
       <nav className="flex justify-between items-center px-12 py-6 text-white/90 text-lg gap-10 relative">
         {/* Logo in upper left */}
-        <a href="/" className="flex items-center group" style={{ textDecoration: 'none' }}>
+        <Link to="/" className="flex items-center group" style={{ textDecoration: 'none' }}>
           <img src={hirlyLogo} alt="Hirly Logo" className="w-24 h-auto drop-shadow-lg transition-transform group-hover:scale-105" style={{ borderRadius: '8px' }} />
-        </a>
+        </Link>
         <div className="flex items-center gap-8">
           <a href="#about" className="hover:text-white transition">About</a>
-          <a href="#pricing" className="hover:text-white transition">Pricing</a>
+          <Link to="/pricing" className="hover:text-white transition">Pricing</Link>
           <button onClick={() => setShowLogin(true)} className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition flex items-center gap-2">
             <LogIn className="w-5 h-5" /> Login / Sign Up
           </button>
