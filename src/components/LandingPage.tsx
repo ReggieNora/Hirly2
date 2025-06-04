@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, UserPlus, LogIn, Star, Quote, Briefcase, Users, Shield, Sparkles, MessageCircle, Globe, CheckCircle } from 'lucide-react';
+import { ArrowRight, UserPlus, LogIn, Star, Quote, Briefcase, Users, Shield, Sparkles, MessageCircle, Globe, CheckCircle, RotateCcw } from 'lucide-react';
 import CardSwap, { Card } from './CardSwap';
 import GradientText from './GradientText';
 import { motion } from 'framer-motion';
@@ -108,11 +108,10 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess }) => {
   const [showSignUp, setShowSignUp] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
   const [userType, setUserType] = useState<'candidate' | 'employer'>('candidate');
-  const [dismissedCards, setDismissedCards] = useState<number[]>([]);
+  const [resetKey, setResetKey] = useState(0);
 
-  const handleDismiss = (index: number) => {
-    setDismissedCards(prev => [...prev, index]);
-  };
+  // Reset cards by changing the key on the container
+  const handleReset = () => setResetKey(k => k + 1);
 
   return (
     <div className="min-h-screen w-full bg-black flex flex-col">
@@ -123,17 +122,22 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess }) => {
         </button>
       </nav>
       {/* Centered Card Stack */}
-      <div className="flex-1 flex items-center justify-center">
-        <DraggableCardContainer className="relative flex items-center justify-center w-full h-full" >
+      <div className="flex-1 flex flex-col items-center justify-center relative">
+        {/* Hidden Reset Button */}
+        <button
+          onClick={handleReset}
+          className="absolute top-4 left-4 opacity-30 hover:opacity-80 transition-opacity z-20 p-2 rounded-full bg-neutral-800"
+          title="Reset Cards"
+        >
+          <RotateCcw className="w-5 h-5 text-white" />
+        </button>
+        <DraggableCardContainer key={resetKey} className="relative flex items-center justify-center w-full h-full" >
           {CARD_STACK.map((item, index) => {
-            if (dismissedCards.includes(index)) return null;
-            // Top card is the last in the array
             const layout = CARD_LAYOUT[index] || { rotate: 0, x: 0, y: 0 };
             return (
               <DraggableCardBody
                 key={index}
                 className={`absolute left-1/2 top-1/2`}
-                onDismiss={() => handleDismiss(index)}
               >
                 <div
                   style={{
@@ -153,20 +157,23 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess }) => {
                     <span className="text-white text-lg font-bold mt-2 mb-2 text-center">
                       {item.title}
                     </span>
-                    {index === 0 && (
-                      <button
-                        className="mt-1 px-6 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold shadow-lg flex items-center justify-center gap-2 hover:from-pink-600 hover:to-purple-600 transition-colors"
-                        onClick={() => setShowSignUp(true)}
-                      >
-                        <UserPlus className="w-5 h-5" /> Get Started <ArrowRight className="w-5 h-5" />
-                      </button>
-                    )}
                   </div>
                 </div>
               </DraggableCardBody>
             );
           })}
         </DraggableCardContainer>
+        {/* Call to Action Section */}
+        <div className="mt-12 flex flex-col items-center justify-center">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">Ready to join Hirly?</h2>
+          <p className="text-white/80 mb-6 text-center max-w-md">Sign up or log in to start matching with top jobs and talent, powered by AI and a modern experience.</p>
+          <button
+            className="px-8 py-4 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white font-semibold shadow-lg flex items-center gap-2 hover:from-pink-600 hover:to-purple-600 transition-colors mx-auto"
+            onClick={() => setShowSignUp(true)}
+          >
+            <UserPlus className="w-5 h-5" /> Sign Up or Log In <ArrowRight className="w-5 h-5" />
+          </button>
+        </div>
       </div>
     </div>
   );
