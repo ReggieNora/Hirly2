@@ -1,0 +1,45 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:unit": "mocha --timeout 10000 --exit \"test/**/*.test.js\"",
+    "test:api": "jest test/api",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.49.9",
+    "axios": "^1.9.0",
+    "bcryptjs": "^3.0.2",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.0",
+    "express-validator": "^7.2.1",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.1",
+    "pdf-parse": "^1.1.1",
+    "pica": "^9.0.1",
+    "zod": "^3.25.49"
+  },
+  "devDependencies": {
+    "chai": "^5.2.0",
+    "chai-http": "^5.1.2",
+    "jest-mock-express": "^0.1.1",
+    "mocha": "^11.5.0",
+    "nodemon": "^3.1.10",
+    "nyc": "^17.1.0",
+    "sinon": "^20.0.0",
+    "supertest": "^7.1.1"
+  }
+}
