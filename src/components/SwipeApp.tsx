@@ -52,8 +52,13 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
   const [cardLayout, setCardLayout] = useState(() => getRandomLayout(jobs.length));
   const [expanded, setExpanded] = useState(true);
   const [resetKey, setResetKey] = useState(0);
+  const [interested, setInterested] = useState<typeof jobs>([]);
+  const [rejected, setRejected] = useState<typeof jobs>([]);
 
-  const handleDismiss = (idx: number) => {
+  const handleDismiss = (idx: number, direction: 'left' | 'right') => {
+    const job = stack[idx];
+    if (direction === 'right') setInterested((prev) => [...prev, job]);
+    if (direction === 'left') setRejected((prev) => [...prev, job]);
     setStack((prev) => prev.filter((_, i) => i !== idx));
     setCardLayout((prev) => prev.filter((_, i) => i !== idx));
   };
@@ -66,6 +71,8 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
   const handleReset = () => {
     setStack(jobs);
     setCardLayout(getRandomLayout(jobs.length));
+    setInterested([]);
+    setRejected([]);
     setResetKey((k) => k + 1);
   };
 
@@ -100,11 +107,13 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
                   const layout = index === stack.length - 1
                     ? { rotate: 0, x: 0, y: 0 }
                     : cardLayout[index] || { rotate: 0, x: 0, y: 0 };
+                  // The top card is always the last in the reversed array
+                  const realIdx = stack.length - 1 - index;
                   return (
                     <DraggableCardBody
                       key={index}
                       className="absolute left-1/2 top-1/2"
-                      onDismiss={() => handleDismiss(stack.length - 1 - index)}
+                      onDismiss={(direction) => handleDismiss(realIdx, direction)}
                     >
                       <div
                         style={{
@@ -142,6 +151,10 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
                 >
                   Back to Menu
                 </button>
+                <div className="mt-6 text-center">
+                  <div className="text-green-600 font-semibold">Interested: {interested.length}</div>
+                  <div className="text-red-600 font-semibold">Rejected: {rejected.length}</div>
+                </div>
               </motion.div>
             )}
           </div>
