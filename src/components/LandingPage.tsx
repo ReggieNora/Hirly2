@@ -80,9 +80,9 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess }) => {
         <div className="flex items-center gap-8">
           <a href="#about" className="hover:text-white transition">About</a>
           <Link to="/pricing" className="hover:text-white transition">Pricing</Link>
-          <button onClick={() => setShowLogin(true)} className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition flex items-center gap-2">
+          <Link to="/login" className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition flex items-center gap-2">
             <LogIn className="w-5 h-5" /> Login / Sign Up
-          </button>
+          </Link>
           <div className="flex gap-4 text-white/70 text-xl ml-4">
             <a href="#" className="hover:text-white transition" aria-label="Twitter"><Twitter /></a>
             <a href="#" className="hover:text-white transition" aria-label="LinkedIn"><Linkedin /></a>
