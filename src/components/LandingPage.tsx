@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { ArrowRight, UserPlus, LogIn, RotateCcw } from 'lucide-react';
+import { ArrowRight, UserPlus, LogIn, RotateCcw, Twitter, Linkedin, Github } from 'lucide-react';
 import { DraggableCardBody, DraggableCardContainer } from './ui/draggable-card';
+import hirlyLogo from '../assets/hirly-logo.png';
 
 interface LandingPageProps {
   onAuthSuccess: (userType: 'candidate' | 'employer') => void;
@@ -76,10 +77,23 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess }) => {
   return (
     <div className="min-h-screen w-full bg-black flex flex-col">
       {/* Navigation */}
-      <nav className="flex justify-end items-center px-12 py-6 text-white/90 text-lg gap-10">
-        <button onClick={() => setShowLogin(true)} className="ml-8 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition flex items-center gap-2">
-          <LogIn className="w-5 h-5" /> Login
-        </button>
+      <nav className="flex justify-between items-center px-12 py-6 text-white/90 text-lg gap-10 relative">
+        {/* Logo in upper left */}
+        <a href="/" className="flex items-center group" style={{ textDecoration: 'none' }}>
+          <img src={hirlyLogo} alt="Hirly Logo" className="w-24 h-auto drop-shadow-lg transition-transform group-hover:scale-105" style={{ borderRadius: '8px' }} />
+        </a>
+        <div className="flex items-center gap-8">
+          <a href="#about" className="hover:text-white transition">About</a>
+          <a href="#pricing" className="hover:text-white transition">Pricing</a>
+          <button onClick={() => setShowLogin(true)} className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition flex items-center gap-2">
+            <LogIn className="w-5 h-5" /> Login / Sign Up
+          </button>
+          <div className="flex gap-4 text-white/70 text-xl ml-4">
+            <a href="#" className="hover:text-white transition" aria-label="Twitter"><Twitter /></a>
+            <a href="#" className="hover:text-white transition" aria-label="LinkedIn"><Linkedin /></a>
+            <a href="#" className="hover:text-white transition" aria-label="GitHub"><Github /></a>
+          </div>
+        </div>
       </nav>
       {/* Centered Card Stack */}
       <div className="flex-1 flex flex-col items-center justify-center relative">
@@ -88,6 +102,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess }) => {
           onClick={handleReset}
           className="absolute top-4 left-4 opacity-30 hover:opacity-80 transition-opacity z-20 p-2 rounded-full bg-neutral-800"
           title="Reset Cards"
+          style={{ marginLeft: '72px' }}
         >
           <RotateCcw className="w-5 h-5 text-white" />
         </button>
