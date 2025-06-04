@@ -69,7 +69,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess }) => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-tl from-purple-700 via-black to-black flex flex-col">
+    <div className="min-h-screen w-full bg-gradient-to-tl from-purple-700 via-black to-black flex flex-col overflow-hidden">
       {/* Navigation */}
       <nav className="flex justify-between items-center px-12 py-6 text-white/90 text-lg gap-10 relative">
         {/* Logo in upper left */}
@@ -100,7 +100,7 @@ const LandingPage: React.FC<LandingPageProps> = ({ onAuthSuccess }) => {
         >
           <RotateCcw className="w-5 h-5 text-white" />
         </button>
-        <DraggableCardContainer key={resetKey} className="fixed inset-0 z-10 flex items-center justify-center" >
+        <DraggableCardContainer key={resetKey} className="absolute inset-0 z-10 flex items-center justify-center" >
           {[...CARD_STACK].reverse().map((item, index) => {
             // The top card (Hirly, target icon) is the last in the reversed array
             const isHero = (CARD_STACK.length - 1 - index) === 0;

@@ -99,3 +99,13 @@
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-white/30;
 }
+
+html, body, #root {
+  min-height: 100vh !important;
+  min-width: 100vw !important;
+  height: 100% !important;
+  width: 100% !important;
+  background: linear-gradient(to top left, #7c3aed, #000 60%, #000) !important;
+  background-color: #000 !important;
+  overflow-x: hidden;
+}
