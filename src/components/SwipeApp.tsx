@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
 import { DraggableCardContainer, DraggableCardBody } from "./ui/draggable-card";
-import { Heart, X } from "lucide-react";
+import { Heart, X, Briefcase, MapPin, Clock, DollarSign, Users, Building2 } from "lucide-react";
 
 const jobs = [
   {
@@ -10,6 +10,23 @@ const jobs = [
     title: "Senior Frontend Developer",
     location: "Mountain View, CA (Remote)",
     description: "Build the next generation of web apps with a world-class team. React, TypeScript, and more.",
+    salary: "$180,000 - $250,000",
+    experience: "5+ years",
+    teamSize: "15-20 people",
+    benefits: [
+      "Comprehensive health coverage",
+      "401(k) matching",
+      "Flexible work hours",
+      "Remote work options",
+      "Professional development budget"
+    ],
+    requirements: [
+      "Expert in React and TypeScript",
+      "Strong understanding of web performance",
+      "Experience with large-scale applications",
+      "Excellent communication skills"
+    ],
+    techStack: ["React", "TypeScript", "Node.js", "GraphQL", "AWS"]
   },
   {
     company: "Microsoft",
@@ -17,6 +34,23 @@ const jobs = [
     title: "Software Engineer",
     location: "Seattle, WA (Hybrid)",
     description: "Join our cloud and AI team to deliver enterprise solutions at scale.",
+    salary: "$160,000 - $220,000",
+    experience: "4+ years",
+    teamSize: "10-15 people",
+    benefits: [
+      "Health, dental, and vision insurance",
+      "Stock options",
+      "Gym membership",
+      "Learning resources",
+      "Parental leave"
+    ],
+    requirements: [
+      "Strong background in cloud technologies",
+      "Experience with Azure or AWS",
+      "Proficiency in C# or Java",
+      "Understanding of distributed systems"
+    ],
+    techStack: ["C#", "Azure", "Kubernetes", "Docker", "SQL Server"]
   },
   {
     company: "Meta",
@@ -24,6 +58,23 @@ const jobs = [
     title: "Full Stack Engineer",
     location: "San Francisco, CA",
     description: "Work on social platforms that connect billions. Node.js, React, GraphQL.",
+    salary: "$190,000 - $260,000",
+    experience: "5+ years",
+    teamSize: "20-25 people",
+    benefits: [
+      "Competitive salary and equity",
+      "Health and wellness programs",
+      "Flexible PTO",
+      "Remote work options",
+      "Learning and development"
+    ],
+    requirements: [
+      "Full-stack development experience",
+      "Strong system design skills",
+      "Experience with large-scale applications",
+      "Excellent problem-solving abilities"
+    ],
+    techStack: ["React", "Node.js", "GraphQL", "Python", "MySQL"]
   },
   {
     company: "Netflix",
@@ -31,6 +82,23 @@ const jobs = [
     title: "UI Engineer",
     location: "Los Gatos, CA (Remote)",
     description: "Design and build beautiful, performant interfaces for millions of viewers.",
+    salary: "$170,000 - $240,000",
+    experience: "4+ years",
+    teamSize: "12-18 people",
+    benefits: [
+      "Unlimited vacation",
+      "Health insurance",
+      "Stock options",
+      "Remote work flexibility",
+      "Professional development"
+    ],
+    requirements: [
+      "Strong UI/UX skills",
+      "Experience with modern frontend frameworks",
+      "Understanding of performance optimization",
+      "Excellent design sense"
+    ],
+    techStack: ["React", "TypeScript", "CSS-in-JS", "Jest", "Webpack"]
   },
 ];
 
@@ -56,6 +124,7 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
   const [interested, setInterested] = useState<typeof jobs>([]);
   const [rejected, setRejected] = useState<typeof jobs>([]);
   const [showTutorial, setShowTutorial] = useState(true);
+  const [selectedJob, setSelectedJob] = useState<typeof jobs[0] | null>(null);
   
   // Create motion values for drag position
   const dragX = useMotionValue(0);
@@ -149,6 +218,105 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
             )}
           </AnimatePresence>
 
+          {/* Job Details Modal */}
+          <AnimatePresence>
+            {selectedJob && (
+              <motion.div
+                className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setSelectedJob(null)}
+              >
+                <motion.div
+                  className="bg-white/90 backdrop-blur-lg rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+                  initial={{ scale: 0.9, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0.9, opacity: 0 }}
+                  onClick={e => e.stopPropagation()}
+                >
+                  <div className="flex items-start justify-between mb-6">
+                    <div className="flex items-center gap-4">
+                      <img src={selectedJob.logo} alt={selectedJob.company} className="h-12" />
+                      <div>
+                        <h2 className="text-2xl font-bold text-gray-900">{selectedJob.title}</h2>
+                        <p className="text-gray-600">{selectedJob.company}</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setSelectedJob(null)}
+                      className="text-gray-500 hover:text-gray-700"
+                    >
+                      <X className="w-6 h-6" />
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="flex items-center gap-2 text-gray-700">
+                      <MapPin className="w-5 h-5" />
+                      <span>{selectedJob.location}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-700">
+                      <DollarSign className="w-5 h-5" />
+                      <span>{selectedJob.salary}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-700">
+                      <Clock className="w-5 h-5" />
+                      <span>{selectedJob.experience}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-gray-700">
+                      <Users className="w-5 h-5" />
+                      <span>{selectedJob.teamSize}</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">Description</h3>
+                      <p className="text-gray-700">{selectedJob.description}</p>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">Requirements</h3>
+                      <ul className="list-disc list-inside space-y-1 text-gray-700">
+                        {selectedJob.requirements.map((req, i) => (
+                          <li key={i}>{req}</li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">Tech Stack</h3>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedJob.techStack.map((tech, i) => (
+                          <span
+                            key={i}
+                            className="px-3 py-1 bg-gray-100 rounded-full text-sm text-gray-700"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2">Benefits</h3>
+                      <ul className="list-disc list-inside space-y-1 text-gray-700">
+                        {selectedJob.benefits.map((benefit, i) => (
+                          <li key={i}>{benefit}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="mt-8 text-center text-sm text-gray-500">
+                    Tap anywhere outside to close
+                  </div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <div className="absolute top-8 right-8 flex gap-2">
             <button
               onClick={handleReset}
@@ -225,6 +393,7 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
                         className="absolute left-1/2 top-1/2"
                         onDismiss={(direction) => handleDismiss(realIdx, direction)}
                         onDrag={(x) => dragX.set(x)}
+                        onTap={() => setSelectedJob(job)}
                       >
                         <div
                           style={{
@@ -239,7 +408,20 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
                             <h3 className="text-xl font-bold mb-2 text-gray-900">{job.title}</h3>
                             <div className="text-gray-700 font-semibold mb-1">{job.company}</div>
                             <div className="text-gray-500 text-sm mb-3">{job.location}</div>
-                            <p className="text-gray-700 text-center text-sm">{job.description}</p>
+                            <p className="text-gray-700 text-center text-sm mb-4">{job.description}</p>
+                            <div className="flex items-center gap-4 text-sm text-gray-600">
+                              <div className="flex items-center gap-1">
+                                <DollarSign className="w-4 h-4" />
+                                <span>{job.salary}</span>
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Clock className="w-4 h-4" />
+                                <span>{job.experience}</span>
+                              </div>
+                            </div>
+                            <div className="mt-4 text-sm text-gray-500">
+                              Tap for more details
+                            </div>
                           </div>
                         </div>
                       </DraggableCardBody>

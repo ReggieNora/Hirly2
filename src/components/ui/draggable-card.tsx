@@ -11,6 +11,7 @@ interface DraggableCardBodyProps {
   className?: string;
   onDismiss?: (direction: 'left' | 'right') => void;
   onDrag?: (x: number) => void;
+  onTap?: () => void;
 }
 
 // Emoji burst component
@@ -59,6 +60,7 @@ export function DraggableCardBody({
   className = "",
   onDismiss,
   onDrag,
+  onTap,
 }: DraggableCardBodyProps) {
   const x = useMotionValue(0);
   const [exitDirection, setExitDirection] = useState<'left' | 'right'>('right');
@@ -97,6 +99,7 @@ export function DraggableCardBody({
       }}
       onDragEnd={handleDragEnd}
       onDrag={(_, info) => onDrag?.(info.offset.x)}
+      onClick={onTap}
     >
       <motion.div
         initial={{ scale: 1, opacity: 1 }}
