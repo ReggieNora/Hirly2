@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
 import { DraggableCardContainer, DraggableCardBody } from "./ui/draggable-card";
-import { Heart, X, Briefcase, MapPin, Clock, DollarSign, Users, Building2 } from "lucide-react";
+import { Heart, X, Briefcase, MapPin, Clock, DollarSign, Users, Building2, Star } from "lucide-react";
 
 const jobs = [
   {
@@ -13,6 +13,7 @@ const jobs = [
     salary: "$180,000 - $250,000",
     experience: "5+ years",
     teamSize: "15-20 people",
+    matchScore: 92,
     benefits: [
       "Comprehensive health coverage",
       "401(k) matching",
@@ -37,6 +38,7 @@ const jobs = [
     salary: "$160,000 - $220,000",
     experience: "4+ years",
     teamSize: "10-15 people",
+    matchScore: 68,
     benefits: [
       "Health, dental, and vision insurance",
       "Stock options",
@@ -61,6 +63,7 @@ const jobs = [
     salary: "$190,000 - $260,000",
     experience: "5+ years",
     teamSize: "20-25 people",
+    matchScore: 35,
     benefits: [
       "Competitive salary and equity",
       "Health and wellness programs",
@@ -85,6 +88,7 @@ const jobs = [
     salary: "$170,000 - $240,000",
     experience: "4+ years",
     teamSize: "12-18 people",
+    matchScore: 78,
     benefits: [
       "Unlimited vacation",
       "Health insurance",
@@ -104,6 +108,25 @@ const jobs = [
 
 const CARD_WIDTH = 340;
 const CARD_HEIGHT = 400;
+
+function getMatchColor(score: number) {
+  if (score >= 75) return "bg-green-500";
+  if (score >= 40) return "bg-yellow-400";
+  return "bg-red-500";
+}
+
+function getMatchMessage(score: number) {
+  if (score >= 75) return { msg: "You're a great match!", icon: <Star className="inline w-5 h-5 text-yellow-400 mb-1" /> };
+  if (score >= 40) return { msg: "You're a possible match.", icon: null };
+  return { msg: "Skills needed to be compatible", icon: null };
+}
+
+const mockMissingSkills = [
+  "GraphQL",
+  "Advanced System Design",
+  "Cloud Infrastructure",
+  "Machine Learning Basics"
+];
 
 function getRandomLayout(num: number) {
   const baseAngles = [-10, -5, 0, 5, 10, 15, -15];
@@ -229,12 +252,18 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
                 onClick={() => setSelectedJob(null)}
               >
                 <motion.div
-                  className="bg-white/90 backdrop-blur-lg rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto"
+                  className="bg-white/90 backdrop-blur-lg rounded-2xl p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto relative"
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   exit={{ scale: 0.9, opacity: 0 }}
                   onClick={e => e.stopPropagation()}
                 >
+                  {/* Match Score Emphasis */}
+                  <div className="absolute right-8 top-8 flex items-center gap-2">
+                    <div className={`w-12 h-12 flex items-center justify-center rounded-full text-white text-lg font-bold shadow-lg border-4 border-white ${getMatchColor(selectedJob.matchScore)}`}>
+                      {selectedJob.matchScore}%
+                    </div>
+                  </div>
                   <div className="flex items-start justify-between mb-6">
                     <div className="flex items-center gap-4">
                       <img src={selectedJob.logo} alt={selectedJob.company} className="h-12" />
@@ -249,6 +278,21 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
                     >
                       <X className="w-6 h-6" />
                     </button>
+                  </div>
+
+                  {/* Match Message */}
+                  <div className="mb-6 text-center">
+                    <span className="text-lg font-semibold text-gray-800 flex items-center justify-center gap-2">
+                      {getMatchMessage(selectedJob.matchScore).icon}
+                      {getMatchMessage(selectedJob.matchScore).msg}
+                    </span>
+                    {selectedJob.matchScore < 40 && (
+                      <ul className="mt-2 text-sm text-red-600 list-disc list-inside">
+                        {mockMissingSkills.map((skill, i) => (
+                          <li key={i}>{skill}</li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 mb-6">
@@ -401,8 +445,13 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
                             height: CARD_HEIGHT,
                             transform: `translate(-50%, -50%) translate(${layout.x}px, ${layout.y}px) rotate(${layout.rotate}deg)`
                           }}
-                          className="bg-white/90 border border-gray-200 rounded-lg shadow-2xl flex flex-col items-center justify-between overflow-hidden"
+                          className="bg-white/90 border border-gray-200 rounded-lg shadow-2xl flex flex-col items-center justify-between overflow-hidden relative"
                         >
+                          {/* Match Score Indicator */}
+                          <div className={`absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full text-xs font-bold text-white shadow border-2 border-white ${getMatchColor(job.matchScore)}`}
+                            title={`Match Score: ${job.matchScore}%`}>
+                            {job.matchScore}%
+                          </div>
                           <div className="flex flex-col items-center justify-center w-full h-full p-6">
                             <img src={job.logo} alt={job.company} className="h-14 mb-4" />
                             <h3 className="text-xl font-bold mb-2 text-gray-900">{job.title}</h3>
