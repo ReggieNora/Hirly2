@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
 import { DraggableCardContainer, DraggableCardBody } from "./ui/draggable-card";
-import { Heart, X, Briefcase, MapPin, Clock, DollarSign, Users, Building2, Star } from "lucide-react";
+import { Heart, X, MapPin, Clock, DollarSign, Users, Building2, Star, Pointer, RotateCcw } from "lucide-react";
 
 const jobs = [
   {
@@ -139,6 +139,12 @@ function getRandomLayout(num: number) {
   }));
 }
 
+function getMatchShadowColor(score: number) {
+  if (score >= 75) return '34,197,94'; // green-500
+  if (score >= 40) return '250,204,21'; // yellow-400
+  return '239,68,68'; // red-500
+}
+
 export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
   const [stack, setStack] = useState(jobs);
   const [cardLayout, setCardLayout] = useState(() => getRandomLayout(jobs.length));
@@ -148,6 +154,7 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
   const [rejected, setRejected] = useState<typeof jobs>([]);
   const [showTutorial, setShowTutorial] = useState(true);
   const [selectedJob, setSelectedJob] = useState<typeof jobs[0] | null>(null);
+  const [lastDismissed, setLastDismissed] = useState<{ job: typeof jobs[0], direction: 'left' | 'right' } | null>(null);
   
   // Create motion values for drag position
   const dragX = useMotionValue(0);
@@ -160,12 +167,29 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
 
   const handleDismiss = (idx: number, direction: 'left' | 'right') => {
     const job = stack[idx];
+    setLastDismissed({ job, direction });
     if (direction === 'right') setInterested((prev) => [...prev, job]);
     if (direction === 'left') setRejected((prev) => [...prev, job]);
     setStack((prev) => prev.filter((_, i) => i !== idx));
     setCardLayout((prev) => prev.filter((_, i) => i !== idx));
     // Reset drag position
     dragX.set(0);
+  };
+
+  const handleRewind = () => {
+    if (!lastDismissed) return;
+    
+    // Remove from the appropriate list
+    if (lastDismissed.direction === 'right') {
+      setInterested(prev => prev.filter(job => job !== lastDismissed.job));
+    } else {
+      setRejected(prev => prev.filter(job => job !== lastDismissed.job));
+    }
+    
+    // Add back to the stack
+    setStack(prev => [lastDismissed.job, ...prev]);
+    setCardLayout(prev => [{ rotate: 0, x: 0, y: 0 }, ...prev]);
+    setLastDismissed(null);
   };
 
   // Reset drag position when stack changes
@@ -206,33 +230,73 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
                 exit={{ opacity: 0 }}
               >
                 <motion.div
-                  className="text-center text-white p-8"
+                  className="text-center text-white p-8 max-w-lg"
                   initial={{ y: 20, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ delay: 0.2 }}
                 >
-                  <h3 className="text-2xl font-bold mb-4">How to Swipe</h3>
-                  <div className="flex justify-center gap-8 mb-6">
-                    <motion.div
-                      className="flex flex-col items-center"
-                      animate={{ x: [-20, 20, -20] }}
-                      transition={{ repeat: Infinity, duration: 2 }}
-                    >
-                      <X className="w-12 h-12 text-red-500 mb-2" />
-                      <span>Swipe Left to Skip</span>
-                    </motion.div>
-                    <motion.div
-                      className="flex flex-col items-center"
-                      animate={{ x: [20, -20, 20] }}
-                      transition={{ repeat: Infinity, duration: 2 }}
-                    >
-                      <Heart className="w-12 h-12 text-green-500 mb-2" />
-                      <span>Swipe Right to Like</span>
-                    </motion.div>
+                  <h3 className="text-3xl font-bold mb-6">How to Use Swipe</h3>
+                  
+                  <div className="space-y-8">
+                    {/* Swipe Actions */}
+                    <div className="flex justify-center gap-8 mb-6">
+                      <motion.div
+                        className="flex flex-col items-center"
+                        animate={{ x: [-20, 20, -20] }}
+                        transition={{ repeat: Infinity, duration: 2 }}
+                      >
+                        <X className="w-12 h-12 text-red-500 mb-2" />
+                        <span>Skip</span>
+                      </motion.div>
+                      <motion.div
+                        className="flex flex-col items-center"
+                        animate={{ x: [20, -20, 20] }}
+                        transition={{ repeat: Infinity, duration: 2 }}
+                      >
+                        <Heart className="w-12 h-12 text-green-500 mb-2" />
+                        <span>Like</span>
+                      </motion.div>
+                    </div>
+
+                    {/* Match Score */}
+                    <div className="flex items-center justify-center gap-4">
+                      <div className="flex flex-col items-center">
+                        <div className="w-12 h-12 rounded-full bg-green-500 mb-2" />
+                        <span className="text-sm">Great Match</span>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <div className="w-12 h-12 rounded-full bg-yellow-400 mb-2" />
+                        <span className="text-sm">Possible Match</span>
+                      </div>
+                      <div className="flex flex-col items-center">
+                        <div className="w-12 h-12 rounded-full bg-red-500 mb-2" />
+                        <span className="text-sm">Skills Needed</span>
+                      </div>
+                    </div>
+
+                    {/* Tap for Details */}
+                    <div className="flex flex-col items-center">
+                      <motion.div
+                        className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center mb-2"
+                        animate={{ 
+                          scale: [1, 1.1, 1],
+                          rotate: [0, 5, 0, -5, 0]
+                        }}
+                        transition={{ 
+                          repeat: Infinity, 
+                          duration: 2,
+                          times: [0, 0.2, 0.4, 0.6, 1]
+                        }}
+                      >
+                        <Pointer className="w-8 h-8 text-white" />
+                      </motion.div>
+                      <span>Tap any card to see full details</span>
+                    </div>
                   </div>
+
                   <button
                     onClick={() => setShowTutorial(false)}
-                    className="px-6 py-2 bg-white/20 rounded-xl hover:bg-white/30 transition"
+                    className="mt-8 px-8 py-3 bg-white/20 rounded-xl hover:bg-white/30 transition text-lg font-semibold"
                   >
                     Got it!
                   </button>
@@ -259,11 +323,35 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
                   onClick={e => e.stopPropagation()}
                 >
                   {/* Match Score Emphasis */}
-                  <div className="absolute right-8 top-8 flex items-center gap-2">
-                    <div className={`w-12 h-12 flex items-center justify-center rounded-full text-white text-lg font-bold shadow-lg border-4 border-white ${getMatchColor(selectedJob.matchScore)}`}>
+                  <motion.div
+                    className={`absolute right-8 top-8 flex items-center gap-2`}
+                    initial={{ scale: 0 }}
+                    animate={{
+                      scale: [0, 1.2, 1],
+                      boxShadow: [
+                        `0 0 0 0 rgba(${getMatchShadowColor(selectedJob.matchScore)},0.5)`,
+                        `0 0 16px 8px rgba(${getMatchShadowColor(selectedJob.matchScore)},0.3)`,
+                        `0 0 0 0 rgba(${getMatchShadowColor(selectedJob.matchScore)},0.0)`
+                      ]
+                    }}
+                    transition={{ duration: 0.8, times: [0, 0.5, 1] }}
+                  >
+                    <motion.div
+                      className={`w-12 h-12 flex items-center justify-center rounded-full text-white text-lg font-bold shadow-lg border-4 border-white ${getMatchColor(selectedJob.matchScore)}`}
+                      initial={{ scale: 0 }}
+                      animate={{
+                        scale: [0, 1.2, 1],
+                        boxShadow: [
+                          `0 0 0 0 rgba(${getMatchShadowColor(selectedJob.matchScore)},0.5)`,
+                          `0 0 16px 8px rgba(${getMatchShadowColor(selectedJob.matchScore)},0.3)`,
+                          `0 0 0 0 rgba(${getMatchShadowColor(selectedJob.matchScore)},0.0)`
+                        ]
+                      }}
+                      transition={{ duration: 0.8, times: [0, 0.5, 1] }}
+                    >
                       {selectedJob.matchScore}%
-                    </div>
-                  </div>
+                    </motion.div>
+                  </motion.div>
                   <div className="flex items-start justify-between mb-6">
                     <div className="flex items-center gap-4">
                       <img src={selectedJob.logo} alt={selectedJob.company} className="h-12" />
@@ -272,12 +360,6 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
                         <p className="text-gray-600">{selectedJob.company}</p>
                       </div>
                     </div>
-                    <button
-                      onClick={() => setSelectedJob(null)}
-                      className="text-gray-500 hover:text-gray-700"
-                    >
-                      <X className="w-6 h-6" />
-                    </button>
                   </div>
 
                   {/* Match Message */}
@@ -362,6 +444,20 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
           </AnimatePresence>
 
           <div className="absolute top-8 right-8 flex gap-2">
+            {lastDismissed && (
+              <motion.button
+                onClick={handleRewind}
+                className="px-4 py-2 rounded-xl bg-white/20 text-white font-semibold shadow hover:bg-white/30 transition flex items-center gap-2"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <RotateCcw className="w-5 h-5" />
+                Rewind
+              </motion.button>
+            )}
             <button
               onClick={handleReset}
               className="px-4 py-2 rounded-xl bg-white/20 text-white font-semibold shadow hover:bg-white/30 transition"
@@ -448,10 +544,22 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
                           className="bg-white/90 border border-gray-200 rounded-lg shadow-2xl flex flex-col items-center justify-between overflow-hidden relative"
                         >
                           {/* Match Score Indicator */}
-                          <div className={`absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full text-xs font-bold text-white shadow border-2 border-white ${getMatchColor(job.matchScore)}`}
-                            title={`Match Score: ${job.matchScore}%`}>
+                          <motion.div
+                            className={`absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full text-xs font-bold text-white shadow border-2 border-white ${getMatchColor(job.matchScore)}`}
+                            title={`Match Score: ${job.matchScore}%`}
+                            initial={{ scale: 0 }}
+                            animate={{
+                              scale: [0, 1.2, 1],
+                              boxShadow: [
+                                `0 0 0 0 rgba(${getMatchShadowColor(job.matchScore)},0.5)`,
+                                `0 0 12px 6px rgba(${getMatchShadowColor(job.matchScore)},0.3)`,
+                                `0 0 0 0 rgba(${getMatchShadowColor(job.matchScore)},0.0)`
+                              ]
+                            }}
+                            transition={{ duration: 0.7, times: [0, 0.5, 1] }}
+                          >
                             {job.matchScore}%
-                          </div>
+                          </motion.div>
                           <div className="flex flex-col items-center justify-center w-full h-full p-6">
                             <img src={job.logo} alt={job.company} className="h-14 mb-4" />
                             <h3 className="text-xl font-bold mb-2 text-gray-900">{job.title}</h3>
