@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion";
 import { DraggableCardContainer, DraggableCardBody } from "./ui/draggable-card";
 import { Heart, X } from "lucide-react";
 
@@ -55,6 +55,16 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
   const [resetKey, setResetKey] = useState(0);
   const [interested, setInterested] = useState<typeof jobs>([]);
   const [rejected, setRejected] = useState<typeof jobs>([]);
+  const [showTutorial, setShowTutorial] = useState(true);
+  
+  // Create motion values for drag position
+  const dragX = useMotionValue(0);
+  
+  // Transform the drag position into icon animations
+  const leftIconScale = useTransform(dragX, [-150, 0], [1.5, 1]);
+  const rightIconScale = useTransform(dragX, [0, 150], [1, 1.5]);
+  const leftIconOpacity = useTransform(dragX, [-150, 0], [1, 0.3]);
+  const rightIconOpacity = useTransform(dragX, [0, 150], [0.3, 1]);
 
   const handleDismiss = (idx: number, direction: 'left' | 'right') => {
     const job = stack[idx];
@@ -62,7 +72,14 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
     if (direction === 'left') setRejected((prev) => [...prev, job]);
     setStack((prev) => prev.filter((_, i) => i !== idx));
     setCardLayout((prev) => prev.filter((_, i) => i !== idx));
+    // Reset drag position
+    dragX.set(0);
   };
+
+  // Reset drag position when stack changes
+  useEffect(() => {
+    dragX.set(0);
+  }, [stack]);
 
   const handleCollapse = () => {
     setExpanded(false);
@@ -87,6 +104,51 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
           exit={{ opacity: 0, scale: 0.9 }}
           transition={{ duration: 0.4 }}
         >
+          {/* Tutorial Overlay */}
+          <AnimatePresence>
+            {showTutorial && (
+              <motion.div
+                className="absolute inset-0 z-50 flex items-center justify-center bg-black/80"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <motion.div
+                  className="text-center text-white p-8"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <h3 className="text-2xl font-bold mb-4">How to Swipe</h3>
+                  <div className="flex justify-center gap-8 mb-6">
+                    <motion.div
+                      className="flex flex-col items-center"
+                      animate={{ x: [-20, 20, -20] }}
+                      transition={{ repeat: Infinity, duration: 2 }}
+                    >
+                      <X className="w-12 h-12 text-red-500 mb-2" />
+                      <span>Swipe Left to Skip</span>
+                    </motion.div>
+                    <motion.div
+                      className="flex flex-col items-center"
+                      animate={{ x: [20, -20, 20] }}
+                      transition={{ repeat: Infinity, duration: 2 }}
+                    >
+                      <Heart className="w-12 h-12 text-green-500 mb-2" />
+                      <span>Swipe Right to Like</span>
+                    </motion.div>
+                  </div>
+                  <button
+                    onClick={() => setShowTutorial(false)}
+                    className="px-6 py-2 bg-white/20 rounded-xl hover:bg-white/30 transition"
+                  >
+                    Got it!
+                  </button>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
           <div className="absolute top-8 right-8 flex gap-2">
             <button
               onClick={handleReset}
@@ -102,49 +164,88 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
             </button>
           </div>
           <div className="w-full max-w-md mx-auto flex flex-col items-center justify-center">
-            {/* Swipe Direction Indicators */}
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2 text-red-500">
-              <X className="w-12 h-12" />
-              <span className="text-sm font-medium text-white">Not Interested</span>
-            </div>
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2 text-green-500">
-              <Heart className="w-12 h-12" />
-              <span className="text-sm font-medium text-white">Interested</span>
-            </div>
+            {/* Animated Swipe Direction Indicators */}
+            <motion.div
+              className="absolute left-0 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <motion.div
+                className="text-red-500"
+                style={{
+                  scale: leftIconScale,
+                  opacity: leftIconOpacity,
+                }}
+              >
+                <X className="w-12 h-12" />
+              </motion.div>
+              <motion.span
+                className="text-sm font-medium text-white"
+                style={{ opacity: leftIconOpacity }}
+              >
+                Not Interested
+              </motion.span>
+            </motion.div>
+
+            <motion.div
+              className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <motion.div
+                className="text-green-500"
+                style={{
+                  scale: rightIconScale,
+                  opacity: rightIconOpacity,
+                }}
+              >
+                <Heart className="w-12 h-12" />
+              </motion.div>
+              <motion.span
+                className="text-sm font-medium text-white"
+                style={{ opacity: rightIconOpacity }}
+              >
+                Interested
+              </motion.span>
+            </motion.div>
 
             {stack.length > 0 ? (
               <DraggableCardContainer key={resetKey} className="relative w-[340px] h-[400px]">
-                {[...stack].reverse().map((job, index) => {
-                  const layout = index === stack.length - 1
-                    ? { rotate: 0, x: 0, y: 0 }
-                    : cardLayout[index] || { rotate: 0, x: 0, y: 0 };
-                  // The top card is always the last in the reversed array
-                  const realIdx = stack.length - 1 - index;
-                  return (
-                    <DraggableCardBody
-                      key={index}
-                      className="absolute left-1/2 top-1/2"
-                      onDismiss={(direction) => handleDismiss(realIdx, direction)}
-                    >
-                      <div
-                        style={{
-                          width: CARD_WIDTH,
-                          height: CARD_HEIGHT,
-                          transform: `translate(-50%, -50%) translate(${layout.x}px, ${layout.y}px) rotate(${layout.rotate}deg)`
-                        }}
-                        className="bg-white/90 border border-gray-200 rounded-lg shadow-2xl flex flex-col items-center justify-between overflow-hidden"
+                <AnimatePresence>
+                  {[...stack].reverse().map((job, index) => {
+                    const layout = index === stack.length - 1
+                      ? { rotate: 0, x: 0, y: 0 }
+                      : cardLayout[index] || { rotate: 0, x: 0, y: 0 };
+                    const realIdx = stack.length - 1 - index;
+                    return (
+                      <DraggableCardBody
+                        key={job.company + index}
+                        className="absolute left-1/2 top-1/2"
+                        onDismiss={(direction) => handleDismiss(realIdx, direction)}
+                        onDrag={(x) => dragX.set(x)}
                       >
-                        <div className="flex flex-col items-center justify-center w-full h-full p-6">
-                          <img src={job.logo} alt={job.company} className="h-14 mb-4" />
-                          <h3 className="text-xl font-bold mb-2 text-gray-900">{job.title}</h3>
-                          <div className="text-gray-700 font-semibold mb-1">{job.company}</div>
-                          <div className="text-gray-500 text-sm mb-3">{job.location}</div>
-                          <p className="text-gray-700 text-center text-sm">{job.description}</p>
+                        <div
+                          style={{
+                            width: CARD_WIDTH,
+                            height: CARD_HEIGHT,
+                            transform: `translate(-50%, -50%) translate(${layout.x}px, ${layout.y}px) rotate(${layout.rotate}deg)`
+                          }}
+                          className="bg-white/90 border border-gray-200 rounded-lg shadow-2xl flex flex-col items-center justify-between overflow-hidden"
+                        >
+                          <div className="flex flex-col items-center justify-center w-full h-full p-6">
+                            <img src={job.logo} alt={job.company} className="h-14 mb-4" />
+                            <h3 className="text-xl font-bold mb-2 text-gray-900">{job.title}</h3>
+                            <div className="text-gray-700 font-semibold mb-1">{job.company}</div>
+                            <div className="text-gray-500 text-sm mb-3">{job.location}</div>
+                            <p className="text-gray-700 text-center text-sm">{job.description}</p>
+                          </div>
                         </div>
-                      </div>
-                    </DraggableCardBody>
-                  );
-                })}
+                      </DraggableCardBody>
+                    );
+                  })}
+                </AnimatePresence>
               </DraggableCardContainer>
             ) : (
               <motion.div
