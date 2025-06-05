@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { DraggableCardContainer, DraggableCardBody } from "./ui/draggable-card";
+import { Heart, X } from "lucide-react";
 
 const jobs = [
   {
@@ -101,6 +102,16 @@ export default function SwipeApp({ onCollapse }: { onCollapse: () => void }) {
             </button>
           </div>
           <div className="w-full max-w-md mx-auto flex flex-col items-center justify-center">
+            {/* Swipe Direction Indicators */}
+            <div className="absolute left-0 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2 text-red-500">
+              <X className="w-12 h-12" />
+              <span className="text-sm font-medium text-white">Not Interested</span>
+            </div>
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col items-center gap-2 text-green-500">
+              <Heart className="w-12 h-12" />
+              <span className="text-sm font-medium text-white">Interested</span>
+            </div>
+
             {stack.length > 0 ? (
               <DraggableCardContainer key={resetKey} className="relative w-[340px] h-[400px]">
                 {[...stack].reverse().map((job, index) => {
