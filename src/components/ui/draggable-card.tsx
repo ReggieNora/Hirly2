@@ -47,11 +47,17 @@ export function DraggableCardBody({
     <motion.div
       className={`cursor-grab active:cursor-grabbing ${className}`}
       drag
-      dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+      dragElastic={0.7}
+      dragConstraints={{ left: -400, right: 400, top: -200, bottom: 200 }}
       style={{ x }}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.97 }}
-      transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      transition={{ 
+        type: "spring", 
+        stiffness: 200, 
+        damping: 20,
+        mass: 0.8
+      }}
       onDragEnd={handleDragEnd}
       onDrag={(_, info) => onDrag?.(info.offset.x)}
     >
