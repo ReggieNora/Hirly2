@@ -43,11 +43,54 @@ const SkeletonCoach = () => (
   </motion.div>
 );
 
+const jobs = [
+  {
+    company: "Google",
+    logo: "https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png",
+    title: "Senior Frontend Developer",
+  },
+  {
+    company: "Microsoft",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg",
+    title: "Software Engineer",
+  },
+  {
+    company: "Meta",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg",
+    title: "Full Stack Engineer",
+  },
+];
+
+const MiniCardStackPreview = () => {
+  const baseAngles = [-8, 0, 8];
+  const baseXs = [-18, 0, 18];
+  const zIndexes = [1, 2, 3];
+  return (
+    <div className="relative w-28 h-28 flex items-center justify-center">
+      {jobs.map((job, i) => (
+        <div
+          key={i}
+          className="absolute left-1/2 top-1/2 bg-white/90 rounded-xl shadow-xl border border-gray-200 flex flex-col items-center justify-end transition-transform"
+          style={{
+            width: 82,
+            height: 96,
+            transform: `translate(-50%, -50%) translateX(${baseXs[i]}px) rotate(${baseAngles[i]}deg)`,
+            zIndex: zIndexes[i],
+            boxShadow: '0 4px 16px 0 rgba(0,0,0,0.10)',
+          }}
+        >
+          <img src={job.logo} alt={job.company} className="h-8 mt-3 mb-2" />
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const items = [
   {
     title: "Swipe",
     description: <span className="text-sm">Find matches. Candidates see jobs, Employers see candidates.</span>,
-    header: <SkeletonSwipe />,
+    header: <MiniCardStackPreview />,
     className: "md:col-span-1",
     icon: <IconBriefcase className="h-5 w-5 text-neutral-500" />,
   },
